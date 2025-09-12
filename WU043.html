@@ -1,0 +1,603 @@
+<script>
+// Insert element helper
+function insertElement(selector, position, html, attempts = 5, interval = 100) {
+	const el = document.querySelector(selector);
+	if (el) {
+		el.insertAdjacentHTML(position, html);
+	} else if (attempts > 0) {
+		setTimeout(
+			() => insertElement(selector, position, html, attempts - 1, interval),
+			interval
+		);
+	}
+}
+
+// Left align hero content
+function leftAlign() {
+  const leftCol = document.querySelector('.reciver-currency-select-dropdown > .col');
+  if (!leftCol) return;
+
+  leftCol.classList.remove('text-center');
+
+  const pad = leftCol.querySelector('.pad-24-bm');
+  if (pad) pad.className = 'pad-24-bm d-flex npd-offer';
+
+  const leftColRows = leftCol.querySelectorAll('.row');
+  leftColRows.forEach((row) => {
+    row.classList.remove('justify-content-center');
+    const col = row.querySelector('.col');
+    if (col) col.classList.remove('col-L-13');
+  });
+}
+leftAlign();
+
+
+// Hero banner function
+function insertBanner(selector, position, heading, messaging, attempts = 10) {
+	let svgIcon = `<img src="https://cdn.jsdelivr.net/gh/npd-cro-kf/cro-bkt/wu-banner-icon.svg"/>`;
+
+	const element = document.querySelector(selector);
+	if (!element) {
+		if (attempts > 0) {
+			setTimeout(
+				() =>
+					insertBanner(selector, position, heading, messaging, attempts - 1),
+				100
+			);
+		}
+		return;
+	}
+
+	const banner = document.createElement('div');
+	banner.id = 'npd-hero-banner';
+	banner.innerHTML = `
+    <div class="banner-row">
+      <div class="banner-heading">${heading}</div>
+      <div class="banner-graphic">${svgIcon}</div>
+    </div>
+    <div class="banner-text">${messaging}</div>
+  `;
+
+	element.insertAdjacentElement(position, banner);
+}
+
+insertBanner(
+	'h1',
+	'beforebegin',
+	'$0 transfer fee*',
+	'on your first international digital transfer'
+);
+
+// Update the icon list
+function iconList() {
+	let iconList =
+		document.querySelector('.hero-banner > section.bk-black') ||
+		document.querySelector('.hero-component > section.bk-black');
+	if (iconList) {
+		iconList.outerHTML = `
+<section class="npd-icon-list">
+    <div class="container">
+        <div class="npd-row">
+            <div id="npd-slot-1"
+                 class="npd-list-item">
+                <div class="icon-E15-Lock-Safe-Secure-Privacy-Encryption text-yellow wu-icon__lg"></div>
+                <div>We are committed to keeping your data secured.
+                </div>
+            </div>
+            <div id="npd-slot-2"
+                 class="npd-list-item">
+                <div class="icon-G11-Globe-World-Country text-yellow wu-icon__lg"></div>
+                <div>
+                    Send money to 200+ countries or territories online or in-store.
+                </div>
+            </div>
+            <div id="npd-slot-3"
+                 class="npd-list-item">
+                <div style="display:flex;align-items:center">
+                    <img class="app-cta-img" src="https://cdn.jsdelivr.net/gh/npd-cro-kf/cro-bkt/wu-trustpilot-badge.svg"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+`;
+	} else {
+		// console.log("No icon list");
+		setTimeout(iconList, 1000);
+	}
+}
+iconList();
+
+// Partner logo ticker
+function logoTicker() {
+	let tickerHTML = `
+	<section class="logo-ticker" aria-label="Our partners">
+	  <div class="ticker-viewport">
+	    <ul class="ticker-track" id="ticker-track">
+	    </ul>
+	  </div>
+	</section>`;
+
+	insertElement('.money-transfer-price-component2', 'beforeend', tickerHTML);
+
+	const npdTicker = document.querySelector('#ticker-track');
+
+	const partnerLogos = document.querySelectorAll('img[src*="Partner-Logo"]');
+	if (npdTicker && partnerLogos) {
+		// Append each found logo to the target div
+		partnerLogos.forEach((img) => {
+			npdTicker.appendChild(img);
+		});
+	}
+
+	const SPEED_PX_PER_SEC = 20;
+	const track = document.getElementById('ticker-track');
+	if (!track) return;
+	const clone = track.cloneNode(true);
+
+	while (clone.firstChild) track.appendChild(clone.firstChild);
+	requestAnimationFrame(() => {
+		const children = Array.from(track.children);
+		const halfCount = Math.floor(children.length / 2);
+		let oneSequenceWidth = 0;
+		for (let i = 0; i < halfCount; i++) {
+			oneSequenceWidth += children[i].getBoundingClientRect().width;
+			if (i < halfCount - 1) {
+				// add the inter-item gap; fetch from CSS if needed
+				const gap = parseFloat(getComputedStyle(track).gap) || 0;
+				oneSequenceWidth += gap;
+			}
+		}
+		const duration = oneSequenceWidth / SPEED_PX_PER_SEC;
+		track.style.setProperty('--duration', `${duration}s`);
+	});
+
+	const observer =
+		'IntersectionObserver' in window &&
+		new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					track.style.animationPlayState = entry.isIntersecting
+						? 'running'
+						: 'paused';
+				});
+			},
+			{ threshold: 0.01 }
+		);
+	if (observer) observer.observe(track);
+
+	const toggle = document.querySelector('.ticker-toggle');
+	if (toggle) {
+		const setPressed = (pressed) => {
+			toggle.setAttribute('aria-pressed', String(pressed));
+			track.style.animationPlayState = pressed ? 'paused' : 'running';
+		};
+		toggle.addEventListener('click', () => {
+			const pressed = toggle.getAttribute('aria-pressed') === 'true';
+			setPressed(!pressed);
+		});
+	}
+}
+logoTicker();
+
+// Continue in app CTA
+function appCTA(options = {}) {
+	// config
+	const smartlinkEN = options.smartlinkEN || 'https://smart.link/tlqs492u7jlks';
+	const delayMs = Number.isFinite(options.delayMs) ? options.delayMs : 2000;
+
+	// helpers scoped to this function
+	const isMobile = () =>
+		typeof window.matchMedia === 'function' &&
+		window.matchMedia('(max-width: 768px)').matches;
+
+	const show = () => {
+		const el = document.getElementById('appCTA');
+		if (el) el.style.display = 'block';
+	};
+
+	const remove = () => {
+		const el = document.getElementById('appCTA');
+		if (el) el.remove();
+		document.removeEventListener('keydown', onKeydown);
+	};
+
+	const onKeydown = (e) => {
+		if (e.key === 'Escape') remove();
+	};
+
+	// guard: mobile only & inject once
+	if (!isMobile() || document.getElementById('appCTA')) return;
+
+	// set expected body id
+	document.body.setAttribute('id', 'npd-sticky-mobile-cta');
+
+	// build markup (IDs/class names unchanged)
+	const wrapper = document.createElement('div');
+	wrapper.setAttribute('id', 'appCTA');
+	wrapper.style.display = 'none';
+	wrapper.innerHTML = `
+		<div class="modal-background svelte-1gmtnmm"></div>
+		<div class="modal svelte-1gmtnmm" role="dialog" aria-modal="true">
+		  <header class="svelte-1gmtnmm">
+		    <small class="svelte-1gmtnmm">Continue with...</small>
+		  </header>
+		  <div class="btn-group svelte-1gmtnmm">
+		    <figure class="svelte-1gmtnmm">
+		      <img class="app-cta-img" src="https://cdn.jsdelivr.net/gh/npd-cro-kf/cro-bkt/wu-app-cta-app-icon.svg"/>
+		      <figcaption class="svelte-1gmtnmm">
+		        <article class="font-body-reg text-wu-dark svelte-1klzftv" slot="app">
+		          <strong>Western Union<sup>®</sup> app</strong>
+		          <p class="svelte-1klzftv">
+		            Send your 1st online money transfer fee-free. FX gains apply.
+		          </p>
+		        </article>
+		      </figcaption>
+		    </figure>
+		    <a href="${smartlinkEN}" class="svelte-1gmtnmm">Open</a>
+		  </div>
+		  <div class="btn-group svelte-1gmtnmm">
+		    <figure class="svelte-1gmtnmm">
+		      <img class="app-cta-img" src="https://cdn.jsdelivr.net/gh/npd-cro-kf/cro-bkt/wu-app-cta-browser-icon.svg"/>
+		      <figcaption class="svelte-1gmtnmm">
+		        <article
+		          class="font-body-reg text-wu-dark svelte-1klzftv"
+		          slot="browser"
+		        >
+		          <strong class="svelte-1klzftv">Browser</strong>
+		        </article>
+		      </figcaption>
+		    </figure>
+		    <button class="svelte-1gmtnmm">Continue</button>
+		  </div>
+		</div>
+`;
+
+	document.body.appendChild(wrapper);
+
+	// wire events
+	const continueBtn = wrapper.querySelector('#appCTA button');
+	const modalBG = wrapper.querySelector('#appCTA > .modal-background');
+
+	continueBtn && continueBtn.addEventListener('click', remove, { once: true });
+	modalBG && modalBG.addEventListener('click', remove, { once: true });
+	document.addEventListener('keydown', onKeydown);
+	window.setTimeout(show, delayMs);
+}
+appCTA();
+
+</script>
+
+<style>
+    /* General styles */
+.hero-banner > section.bk-yellow {
+  padding: 2rem 0 !important;
+}
+
+.hero-banner__img-container {
+  background-position: center;
+}
+
+h1 {
+  padding-bottom: 12px;
+}
+
+.npd-subhead {
+  font-size: 1.5rem;
+  line-height: 1.5;
+  padding-top: 0 !important;
+}
+
+.row.calculator {
+  padding-top: 1.5rem !important;
+}
+
+.npd-offer {
+  display: none !important;
+}
+
+.bk-green {
+  display: none;
+}
+
+.render-fx-rate-text {
+  display: none;
+}
+
+a#corridor-get-started {
+  margin-bottom: 1rem !important;
+}
+
+.reciver-currency-select-dropdown .row.pad-24-bm.py-L-0:has(p) {
+  padding: 0;
+}
+
+.reciver-currency-select-dropdown .row.pad-24-bm.py-L-0 > p > br {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .hero-banner > section.pad-xxl-tp {
+    padding-top: 2rem !important;
+  }
+  #PriceVariantB .hero-banner__img-container {
+    margin-bottom: 0;
+  }
+  .hero-banner__img-container {
+    background-position: center;
+    height: 500px;
+  }
+  .hero-banner > section.pad-xxxl-bm {
+    padding-bottom: 0 !important;
+  }
+  .hero-banner__row {
+    display: none;
+  }
+}
+@media (max-width: 480px) {
+  .hero-banner__img-container {
+    background-position: center;
+    height: 350px;
+  }
+  h1 {
+    font-size: 34px !important;
+  }
+  .npd-subhead {
+    font-size: 23px !important;
+  }
+}
+/* Banner Component */
+#npd-hero-banner {
+  display: flex;
+  flex-direction: column;
+  background-color: #000;
+  outline: 2px solid #000;
+  border-radius: 4px;
+  margin: 0 auto 2rem;
+}
+
+#npd-hero-banner .banner-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+#npd-hero-banner .banner-row .banner-heading {
+  font-family: "PP Right Grotesk";
+  font-size: 24px;
+  color: #ffdd00;
+  align-self: flex-end;
+  padding: 16px 16px 0;
+}
+
+#npd-hero-banner .banner-text {
+  font-size: 20px;
+  line-height: 1.5;
+  color: #fff;
+  padding: 0 16px 16px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  #npd-hero-banner .banner-row .banner-heading {
+    font-size: 21px;
+  }
+  #npd-hero-banner .banner-text {
+    font-size: 18px;
+  }
+}
+/* Icon list */
+.npd-icon-list {
+  background-color: #000000;
+  padding: 1rem 0;
+}
+
+.npd-row {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.npd-list-item {
+  display: flex;
+  flex-direction: row;
+  color: #ffffff;
+  font-family: "PP Right Grotesk";
+  font-size: 1rem;
+  font-weight: 400;
+  max-width: 30%;
+}
+
+.npd-list-item .wu-icon__lg {
+  padding-right: 10px;
+}
+
+@media (max-width: 1023px) {
+  .npd-icon-list {
+    padding: 1.5rem 0;
+  }
+  .npd-row {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .npd-list-item {
+    max-width: 100%;
+  }
+}
+.logo-ticker {
+  --gap: 48px;
+  --height: 56px;
+  --fade: 48px;
+  --duration: 30s;
+  margin: 1rem 0;
+}
+
+.ticker-viewport {
+  overflow: hidden;
+  position: relative;
+  /* subtle edge fades */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+}
+
+.ticker-track {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 2rem;
+  will-change: transform;
+  animation: ticker-scroll var(--duration) linear infinite;
+  list-style: none;
+  margin-bottom: 0;
+}
+.ticker-track img {
+  max-height: 60px;
+  max-width: 140px;
+  object-fit: contain;
+  margin: 0 !important;
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+/* Reduced motion: stop auto-scroll */
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+}
+#npd-sticky-mobile-cta #signupModalMain {
+  display: none !important;
+}
+#npd-sticky-mobile-cta #appCTA {
+  display: none;
+}
+#npd-sticky-mobile-cta #appCTA .modal-background.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm,
+#npd-sticky-mobile-cta #appCTA .modal.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm,
+#npd-sticky-mobile-cta #appCTA .modal.svelte-1gmtnmm > header.svelte-1gmtnmm.svelte-1gmtnmm,
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm,
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm > figure.svelte-1gmtnmm.svelte-1gmtnmm,
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm > button.svelte-1gmtnmm.svelte-1gmtnmm,
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm > a.svelte-1gmtnmm.svelte-1gmtnmm {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+#npd-sticky-mobile-cta #appCTA .modal.svelte-1gmtnmm > header.svelte-1gmtnmm.svelte-1gmtnmm {
+  display: flex;
+  align-items: center;
+  place-content: center;
+  padding: 10px;
+  width: 100%;
+}
+#npd-sticky-mobile-cta #appCTA .modal.svelte-1gmtnmm > header.svelte-1gmtnmm.svelte-1gmtnmm > small.svelte-1gmtnmm {
+  font-size: 14px;
+}
+#npd-sticky-mobile-cta #appCTA #AppPopUp {
+  text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  --bot-chat-color: #ffdd00;
+  line-height: 1.5;
+  font-family: Roboto, "Noto Sans", sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgb(33, 37, 41);
+  text-align: left;
+  visibility: visible;
+  box-sizing: border-box;
+}
+#npd-sticky-mobile-cta #appCTA .modal-background.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm {
+  position: fixed;
+  top: 0 !important;
+  left: 0;
+  min-width: 100vw;
+  max-width: 100vw;
+  width: 100%;
+  min-height: 100vh;
+  max-height: 100vh;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+}
+#npd-sticky-mobile-cta #appCTA .modal.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm {
+  display: flex;
+  align-items: flex-start;
+  place-content: flex-start;
+  flex-direction: column;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  max-width: 100vw;
+  overflow: auto;
+  background: #fff;
+  z-index: 2147483647;
+  border-radius: 12px 12px 0 0;
+}
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm {
+  display: flex;
+  align-items: center;
+  place-content: center space-between;
+  padding: 12px 14px;
+  width: 100%;
+}
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm:first-of-type {
+  border-top: thin solid rgb(238, 238, 238);
+  border-bottom: thin solid rgb(238, 238, 238);
+}
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm > figure.svelte-1gmtnmm.svelte-1gmtnmm {
+  display: flex;
+  align-items: center;
+  place-content: center flex-start;
+}
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm > a.svelte-1gmtnmm.svelte-1gmtnmm,
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm > button.svelte-1gmtnmm.svelte-1gmtnmm {
+  display: flex;
+  place-content: center;
+  align-items: center;
+  text-align: center;
+  min-width: 110px;
+  padding: 8px 10px;
+  background: transparent;
+  border-radius: 100px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1;
+}
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm a.svelte-1gmtnmm.svelte-1gmtnmm {
+  background: rgb(255, 221, 0);
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+  border: 2px solid rgb(255, 221, 0);
+}
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm:last-of-type {
+  padding-bottom: 20px;
+}
+#npd-sticky-mobile-cta #appCTA .btn-group.svelte-1gmtnmm.svelte-1gmtnmm.svelte-1gmtnmm > button.svelte-1gmtnmm.svelte-1gmtnmm {
+  color: rgb(0, 0, 0);
+  border: 2px solid rgb(0, 0, 0);
+}
+#npd-sticky-mobile-cta #appCTA .app-cta-img {
+  width: 48px;
+  height: 48px;
+}
+#npd-sticky-mobile-cta #appCTA article.svelte-1klzftv,
+#npd-sticky-mobile-cta #appCTA strong.svelte-1klzftv,
+#npd-sticky-mobile-cta #appCTA p.svelte-1klzftv {
+  padding: 0;
+  font-family: "Euclid WU", "Noto Sans", sans-serif;
+  line-height: 1;
+}
+#npd-sticky-mobile-cta #appCTA article.svelte-1klzftv {
+  padding: 2px 8px;
+}
+#npd-sticky-mobile-cta #appCTA strong.svelte-1klzftv {
+  font-weight: 500;
+  font-size: 1rem;
+}
+</style>
