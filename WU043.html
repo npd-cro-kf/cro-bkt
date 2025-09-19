@@ -121,9 +121,9 @@ function logoTicker() {
 	insertElement('.money-transfer-price-component2', 'beforeend', tickerHTML);
 
 	const npdTicker = document.querySelector('#ticker-track');
-
-	// const partnerLogos = document.querySelectorAll('img[src*="Partner-Logo"]');
-		const partnerLogos = document.querySelectorAll('.reciver-currency-select-dropdown .col-sm > img');
+	const partnerLogos = document.querySelectorAll(
+		'.reciver-currency-select-dropdown .row:last-of-type img'
+	);
 	if (npdTicker && partnerLogos) {
 		// Append each found logo to the target div
 		partnerLogos.forEach((img) => {
