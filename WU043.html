@@ -122,7 +122,8 @@ function logoTicker() {
 
 	const npdTicker = document.querySelector('#ticker-track');
 
-	const partnerLogos = document.querySelectorAll('img[src*="Partner-Logo"]');
+	// const partnerLogos = document.querySelectorAll('img[src*="Partner-Logo"]');
+		const partnerLogos = document.querySelectorAll('.reciver-currency-select-dropdown .col-sm > img');
 	if (npdTicker && partnerLogos) {
 		// Append each found logo to the target div
 		partnerLogos.forEach((img) => {
@@ -265,7 +266,6 @@ function appCTA(options = {}) {
 	window.setTimeout(show, delayMs);
 }
 appCTA();
-
 </script>
 
 <style>
