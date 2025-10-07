@@ -13,99 +13,105 @@
 // sendAmplitudeData('npd044', '044-v1')
 </script>
 <style>
-  /* V1 */
+/* V1 */
+#PriceVariantB .money-transfer-price-component2 {
+  padding: 2rem 0;
+}
+@media (min-width: 1024px) {
   #PriceVariantB .money-transfer-price-component2 {
-    padding: 2rem 0;
+    padding: 6rem 0 2rem;
   }
-  #PriceVariantB h1 {
-    font-size: 40px;
-    line-height: 120%;
-  }
-  #PriceVariantB .money-transfer-price-component2 > .row > .col.col-16.col-L-8 {
-    min-width: 60% !important;
-  }
-  #PriceVariantB .money-transfer-price-component2 > div > div > div.row.pad-xs-tp {
-    padding-top: 16px;
-  }
-  #PriceVariantB .money-transfer-price-component2 p.text-wu-dark {
-    margin-bottom: 1rem !important;
-  }
-  #PriceVariantB .font-header-h6.text-wu-dark:first-of-type {
-    display: none !important;
-  }
-  #PriceVariantB .reciver-currency-select-dropdown > .col:has(.fee-container),
-  #PriceVariantB .reciver-currency-select-dropdown .col:has(.wu-input),
-  #PriceVariantB .reciver-currency-select-dropdown .col:has(span.icon-D09-Exchange-Rate-Swap) {
-    display: none !important;
-  }
-  #PriceVariantB .reciver-currency-select-dropdown .wu-link_tertiatry {
-    display: block;
-  }
-  #PriceVariantB .money-transfer-price-component2 > div > div > div.row.pad-xs-tp > div.col.col-16.mar-xs-tp {
-    display: none;
-  }
-  
-  #trustpilot-star-svg {
-    padding-top: 0rem !important;
-  }
-  @media (min-width: 1024px) {
-    #PriceVariantB .money-transfer-price-component2 {
-      padding: 6rem 0 2rem;
-    }
-  }
-  @media (max-width: 1023px) {
-    #PriceVariantB .hero-banner__row {
-      display: none;
-    }
-  }
-
-  /* V2 */
-  #PriceVariantB .money-transfer-price-component2 {
-    padding: 3rem 0 2rem;
-  }
-  #PriceVariantB .money-transfer-price-component2 > .row > .col.col-16.col-L-8 {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 60% !important;
-    margin: 0 auto;
-    text-align: center;
-  }
-  #PriceVariantB .money-transfer-price-component2 h1 {
-    font-size: clamp(3rem, 6vw, 4.5rem);
-    line-height: 120%;
-    font-weight: 600 !important;
-  }
-  #PriceVariantB .money-transfer-price-component2 .col:has(a.wu-button_primary) {
-    min-width: 100%;
-  }
-  #PriceVariantB .money-transfer-price-component2 p.text-wu-dark {
-    font-size: 20px;
-    line-height: 150%;
-    margin-bottom: 1rem;
-  }
-  #PriceVariantB .money-transfer-price-component2 > div > div > div.row.pad-xs-tp {
-    padding-top: 16px;
-  }
+}
+#PriceVariantB h1 {
+  font-size: 40px;
+  line-height: 120%;
+}
+#PriceVariantB .money-transfer-price-component2 > .row > .col.col-16.col-L-8 {
+  min-width: 60% !important;
+}
+#PriceVariantB .money-transfer-price-component2 > div > div > div.row.pad-xs-tp {
+  padding-top: 16px;
+}
+#PriceVariantB .money-transfer-price-component2 p.text-wu-dark {
+  margin-bottom: 1rem !important;
+}
+@media (max-width: 1023px) {
   #PriceVariantB .hero-banner__row {
     display: none;
   }
-  #PriceVariantB .font-header-h6.text-wu-dark:first-of-type {
-    display: none !important;
-  }
-  #PriceVariantB .reciver-currency-select-dropdown {
-    justify-content: center;
-  }
-  #PriceVariantB .reciver-currency-select-dropdown > .col:has(.fee-container),
-  #PriceVariantB .reciver-currency-select-dropdown .col:has(.wu-input),
-  #PriceVariantB .reciver-currency-select-dropdown .col:has(span.icon-D09-Exchange-Rate-Swap) {
-    display: none !important;
-  }
-  #PriceVariantB .money-transfer-price-component2 > div > div > div.row.pad-xs-tp > div.col.col-16.mar-xs-tp {
-    display: none;
-  }
-  
-  #trustpilot-star-svg {
-    padding-top: 0rem !important;
-  }
+}
+#PriceVariantB .font-header-h6.text-wu-dark:first-of-type {
+  display: none !important;
+}
+#PriceVariantB .reciver-currency-select-dropdown > .col:has(.fee-container),
+#PriceVariantB .reciver-currency-select-dropdown .col:has(.wu-input),
+#PriceVariantB .reciver-currency-select-dropdown .col:has(span.icon-D09-Exchange-Rate-Swap) {
+  display: none !important;
+}
+#PriceVariantB .reciver-currency-select-dropdown .wu-link_tertiatry {
+  display: block;
+}
+#PriceVariantB .money-transfer-price-component2 > div > div > div.row.pad-xs-tp > div.col.col-16.mar-xs-tp {
+  display: none;
+}
+div.col:has(#trustpilot-star-svg) {
+  padding-top: 0rem !important;
+}
+#trustpilot-star-svg p {
+  margin-top: 8px;
+}
+
+/* V2 */
+#PriceVariantB .money-transfer-price-component2 {
+  padding: 3rem 0 2rem;
+}
+#PriceVariantB .money-transfer-price-component2 > .row > .col.col-16.col-L-8 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60% !important;
+  margin: 0 auto;
+  text-align: center;
+}
+#PriceVariantB .money-transfer-price-component2 h1 {
+  font-size: clamp(3rem, 6vw, 4.5rem);
+  line-height: 120%;
+  font-weight: 600 !important;
+}
+#PriceVariantB .money-transfer-price-component2 .col:has(a.wu-button_primary) {
+  min-width: 100%;
+}
+#PriceVariantB .money-transfer-price-component2 p.text-wu-dark {
+  font-size: 20px;
+  line-height: 150%;
+  margin-bottom: 1rem;
+}
+#PriceVariantB .money-transfer-price-component2 > div > div > div.row.pad-xs-tp {
+  padding-top: 16px;
+}
+#PriceVariantB .hero-banner__row {
+  display: none;
+}
+#PriceVariantB .font-header-h6.text-wu-dark:first-of-type {
+  display: none !important;
+}
+#PriceVariantB .reciver-currency-select-dropdown {
+  justify-content: center;
+}
+#PriceVariantB .reciver-currency-select-dropdown > .col:has(.fee-container),
+#PriceVariantB .reciver-currency-select-dropdown .col:has(.wu-input),
+#PriceVariantB .reciver-currency-select-dropdown .col:has(span.icon-D09-Exchange-Rate-Swap) {
+  display: none !important;
+}
+#PriceVariantB .money-transfer-price-component2 > div > div > div.row.pad-xs-tp > div.col.col-16.mar-xs-tp {
+  display: none;
+}
+
+div.col:has(#trustpilot-star-svg) {
+  padding-top: 0rem !important;
+}
+
+#trustpilot-star-svg p {
+  margin-top: 8px;
+}  
 </style>
