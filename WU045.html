@@ -1,0 +1,312 @@
+<script>
+  // Insert element helper
+function insertElement(selector, position, html, attempts = 5, interval = 100) {
+	const el = document.querySelector(selector);
+	if (el) {
+		el.insertAdjacentHTML(position, html);
+	} else if (attempts > 0) {
+		setTimeout(
+			() => insertElement(selector, position, html, attempts - 1, interval),
+			interval
+		);
+	}
+}
+
+// Left align hero content
+function leftAlign() {
+	const leftCol = document.querySelector(
+		'.reciver-currency-select-dropdown > .col'
+	);
+	if (!leftCol) return;
+
+	leftCol.classList.remove('text-center');
+
+	const pad = leftCol.querySelector('.pad-24-bm');
+	if (pad) pad.className = 'pad-24-bm d-flex npd-offer';
+
+	const leftColRows = leftCol.querySelectorAll('.row');
+	leftColRows.forEach((row) => {
+		row.classList.remove('justify-content-center');
+		const col = row.querySelector('.col');
+		if (col) col.classList.remove('col-L-13');
+	});
+}
+leftAlign();
+
+// Update the icon list
+function iconList() {
+	let iconList =
+		document.querySelector('.hero-banner > section.bk-black') ||
+		document.querySelector('.hero-component > section.bk-black');
+	if (iconList) {
+		iconList.outerHTML = `
+<section class="npd-icon-list">
+    <div class="container">
+        <div class="npd-row">
+            <div id="npd-slot-1"
+                 class="npd-list-item">
+                <div class="icon-E15-Lock-Safe-Secure-Privacy-Encryption text-yellow wu-icon__lg"></div>
+                <div>We are committed to keeping your data secured.
+                </div>
+            </div>
+            <div id="npd-slot-2"
+                 class="npd-list-item">
+                <div class="icon-G11-Globe-World-Country text-yellow wu-icon__lg"></div>
+                <div>
+                    Send money to 200+ countries or territories online or in-store.
+                </div>
+            </div>
+            <div id="npd-slot-3"
+                 class="npd-list-item">
+                <div style="display:flex;align-items:center">
+                    <img class="app-cta-img" src="https://cdn.jsdelivr.net/gh/npd-cro-kf/cro-bkt/wu-trustpilot-badge.svg"/>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+`;
+	} else {
+		setTimeout(iconList, 1000);
+	}
+}
+iconList();
+
+// Partner logo ticker
+function logoTicker() {
+	let tickerHTML = `
+	<section class="logo-ticker" aria-label="Our partners">
+	  <div class="ticker-viewport">
+	    <ul class="ticker-track" id="ticker-track">
+	    </ul>
+	  </div>
+	</section>`;
+
+	insertElement('.money-transfer-price-component2', 'beforeend', tickerHTML);
+
+	const npdTicker = document.querySelector('#ticker-track');
+
+	const partnerLogos = document.querySelectorAll(
+		'.reciver-currency-select-dropdown .row:last-of-type img'
+	);
+	if (npdTicker && partnerLogos) {
+		// Append each found logo to the target div
+		partnerLogos.forEach((img) => {
+			npdTicker.appendChild(img);
+		});
+	}
+
+	const SPEED_PX_PER_SEC = 20;
+	const track = document.getElementById('ticker-track');
+	if (!track) return;
+	const clone = track.cloneNode(true);
+
+	while (clone.firstChild) track.appendChild(clone.firstChild);
+	requestAnimationFrame(() => {
+		const children = Array.from(track.children);
+		const halfCount = Math.floor(children.length / 2);
+		let oneSequenceWidth = 0;
+		for (let i = 0; i < halfCount; i++) {
+			oneSequenceWidth += children[i].getBoundingClientRect().width;
+			if (i < halfCount - 1) {
+				// add the inter-item gap; fetch from CSS if needed
+				const gap = parseFloat(getComputedStyle(track).gap) || 0;
+				oneSequenceWidth += gap;
+			}
+		}
+		const duration = oneSequenceWidth / SPEED_PX_PER_SEC;
+		track.style.setProperty('--duration', `${duration}s`);
+	});
+
+	const observer =
+		'IntersectionObserver' in window &&
+		new IntersectionObserver(
+			(entries) => {
+				entries.forEach((entry) => {
+					track.style.animationPlayState = entry.isIntersecting
+						? 'running'
+						: 'paused';
+				});
+			},
+			{ threshold: 0.01 }
+		);
+	if (observer) observer.observe(track);
+
+	const toggle = document.querySelector('.ticker-toggle');
+	if (toggle) {
+		const setPressed = (pressed) => {
+			toggle.setAttribute('aria-pressed', String(pressed));
+			track.style.animationPlayState = pressed ? 'paused' : 'running';
+		};
+		toggle.addEventListener('click', () => {
+			const pressed = toggle.getAttribute('aria-pressed') === 'true';
+			setPressed(!pressed);
+		});
+	}
+}
+logoTicker();
+</script>
+<style>
+  /* General styles */
+.hero-banner > section.bk-yellow {
+  padding: 2rem 0 !important;
+}
+
+.hero-banner__img-container {
+  background-position: center;
+}
+
+h1 {
+  padding-bottom: 12px;
+}
+
+.npd-subhead {
+  font-size: 1.5rem;
+  line-height: 1.5;
+  padding-top: 0 !important;
+}
+
+.row.calculator {
+  padding-top: 1.5rem !important;
+}
+
+.npd-offer {
+  display: none !important;
+}
+
+.bk-green {
+  display: none;
+}
+
+.render-fx-rate-text {
+  display: none;
+}
+
+a#corridor-get-started {
+  margin-bottom: 1rem !important;
+}
+
+.reciver-currency-select-dropdown .row.pad-24-bm.py-L-0:has(p) {
+  padding: 0;
+}
+
+.reciver-currency-select-dropdown .row.pad-24-bm.py-L-0 > p > br {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .hero-banner > section.pad-xxl-tp {
+    padding-top: 2rem !important;
+  }
+  #PriceVariantB .hero-banner__img-container {
+    margin-bottom: 0;
+  }
+  .hero-banner__img-container {
+    background-position: center;
+    height: 500px;
+  }
+  .hero-banner > section.pad-xxxl-bm {
+    padding-bottom: 0 !important;
+  }
+  .hero-banner__mask {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+@media (max-width: 480px) {
+  .hero-banner__img-container {
+    background-position: center;
+    height: 350px;
+  }
+  h1 {
+    font-size: 34px !important;
+  }
+  .npd-subhead {
+    font-size: 23px !important;
+  }
+}
+/* Icon list */
+.npd-icon-list {
+  background-color: #000000;
+  padding: 1rem 0;
+}
+
+.npd-row {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.npd-list-item {
+  display: flex;
+  flex-direction: row;
+  color: #ffffff;
+  font-family: "PP Right Grotesk";
+  font-size: 1rem;
+  font-weight: 400;
+  max-width: 30%;
+}
+
+.npd-list-item .wu-icon__lg {
+  padding-right: 10px;
+}
+
+@media (max-width: 1023px) {
+  .npd-icon-list {
+    padding: 1.5rem 0;
+  }
+  .npd-row {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .npd-list-item {
+    max-width: 100%;
+  }
+}
+.logo-ticker {
+  --gap: 48px;
+  --height: 56px;
+  --fade: 48px;
+  --duration: 30s;
+  margin: 1rem 0;
+}
+
+.ticker-viewport {
+  overflow: hidden;
+  position: relative;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+}
+
+.ticker-track {
+  display: inline-flex;
+  align-items: center;
+  column-gap: 2rem;
+  will-change: transform;
+  animation: ticker-scroll var(--duration) linear infinite;
+  list-style: none;
+  margin-bottom: 0;
+}
+.ticker-track img {
+  max-height: 60px;
+  max-width: 140px;
+  object-fit: contain;
+  margin: 0 !important;
+}
+
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+/* Reduced motion: stop auto-scroll */
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+}
+</style>
